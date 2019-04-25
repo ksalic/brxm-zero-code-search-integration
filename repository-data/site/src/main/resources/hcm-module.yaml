@@ -1,0 +1,6 @@
+group: 
+  name: searchdemo
+  after: hippo-cms
+project: searchdemo
+module:
+  name: searchdemo-repository-data-site

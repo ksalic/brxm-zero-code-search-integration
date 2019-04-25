@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+         http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+
+  <bean id="jmsConnectionFactory" class="org.apache.qpid.jms.JmsConnectionFactory">
+    <property name="remoteURI" value="amqps://${jms.remoteuri}?amqp.traceFrames=true&amp;amqp.idleTimeout=120000"/>
+    <property name="username" value="${jms.username}"/>
+    <property name="password" value="${jms.password}"/>
+  </bean>
+
+  <bean id="jmsCachingConnectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">
+    <property name="targetConnectionFactory" ref="jmsConnectionFactory"/>
+  </bean>
+
+  <bean id="jmsConfig" class="org.apache.camel.component.jms.JmsConfiguration">
+    <property name="connectionFactory" ref="jmsCachingConnectionFactory"/>
+    <property name="cacheLevelName" value="CACHE_CONSUMER"/>
+  </bean>
+
+  <bean id="amqp" class="org.apache.camel.component.amqp.AMQPComponent">
+    <property name="configuration" ref="jmsConfig"/>
+  </bean>
+
+  <bean id="elasticsearch-rest" class="org.apache.camel.component.elasticsearch.ElasticsearchComponent">
+    <property name="hostAddresses" value="${elasticsearch.host}"/>
+  </bean>
+
+  <bean id="json-map" class="org.apache.camel.component.jackson.JacksonDataFormat">
+    <property name="unmarshalType" value="java.util.Map"/>
+  </bean>
+
+  <camelContext id="SearchService" xmlns="http://camel.apache.org/schema/spring">
+
+    <route id="Topic-to-Search">
+
+      <from uri="amqp:topic:content-search"/>
+
+      <unmarshal ref="json-map"/>
+
+      <choice>
+        <when>
+          <simple>${body[action]} == 'publish'</simple>
+          <log message="publish ${body}"/>
+          <setProperty propertyName="indexId">
+            <simple>${body[subjectId]}</simple>
+          </setProperty>
+          <setHeader headerName="CamelHttpMethod">
+            <constant>GET</constant>
+          </setHeader>
+          <setBody>
+            <constant>null</constant>
+          </setBody>
+          <recipientList>
+            <simple>http4://${properties:brxm.hal.url}/api/documents/${property.indexId}</simple>
+          </recipientList>
+          <convertBodyTo type="java.lang.String"/>
+          <setHeader headerName="indexId">
+            <simple>${property.indexId}</simple>
+          </setHeader>
+          <to uri="elasticsearch-rest://esDevCluster?operation=INDEX&amp;indexName=content&amp;indexType=document"/>
+        </when>
+        <when>
+          <simple>${body[action]} == 'depublish'</simple>
+          <log message="depublish ${body}"/>
+          <setHeader headerName="indexId">
+            <simple>${body[subjectId]}</simple>
+          </setHeader>
+          <setBody>
+            <simple>${body[subjectId]}</simple>
+          </setBody>
+          <to uri="elasticsearch-rest://esDevCluster?operation=DELETE&amp;indexName=content&amp;indexType=document"/>
+        </when>
+      </choice>
+
+    </route>
+
+    <route id="Initial-Index">
+
+      <from uri="timer://runOnce?repeatCount=1&amp;delay=5000"/>
+
+      <recipientList>
+        <simple>http4://${properties:brxm.hal.url}/api/documents</simple>
+      </recipientList>
+
+      <unmarshal ref="json-map"/>
+
+      <loop>
+        <simple>${body[_meta][totalSize]}</simple>
+
+        <log message="http - ${properties:brxm.hal.url}/api/documents?_offset=${property.CamelLoopIndex}&amp;_limit=1"/>
+
+        <setHeader headerName="CamelHttpMethod">
+          <constant>GET</constant>
+        </setHeader>
+        <setBody>
+          <constant>null</constant>
+        </setBody>
+        <recipientList>
+          <simple>http4://${properties:brxm.hal.url}/api/documents?_offset=${property.CamelLoopIndex}&amp;_limit=1</simple>
+        </recipientList>
+
+        <unmarshal ref="json-map"/>
+
+        <setBody>
+          <simple>${body[_embedded][documents][0]}</simple>
+        </setBody>
+
+        <setHeader headerName="indexId">
+          <simple>${body[_meta][id]}</simple>
+        </setHeader>
+
+        <marshal ref="json-map"/>
+
+        <log message="index ${header.indexId} with body ${body}"/>
+
+        <to uri="elasticsearch-rest://esDevCluster?operation=INDEX&amp;indexName=content&amp;indexType=document"/>
+
+      </loop>
+
+    </route>
+
+  </camelContext>
+
+</beans>

@@ -1,0 +1,27 @@
+<'searchdemo'='http://www.searchdemo.com/searchdemo/nt/1.0'>
+<'hippo'='http://www.onehippo.org/jcr/hippo/nt/2.0.4'>
+<'hippostd'='http://www.onehippo.org/jcr/hippostd/nt/2.0'>
+<'hippostdpubwf'='http://www.onehippo.org/jcr/hippostdpubwf/nt/1.0'>
+<'hippotranslation'='http://www.onehippo.org/jcr/hippotranslation/nt/1.0'>
+
+[searchdemo:account] > hippo:compound, hippostd:relaxed
+  orderable
+
+[searchdemo:basedocument] > hippo:document, hippostd:publishableSummary, hippostdpubwf:document
+  orderable
+
+[searchdemo:author] > hippostd:relaxed, hippotranslation:translated, searchdemo:basedocument
+  orderable
+
+[searchdemo:bannerdocument] > hippostd:relaxed, hippotranslation:translated, searchdemo:basedocument
+  orderable
+
+[searchdemo:blogpost] > hippostd:relaxed, hippotranslation:translated, searchdemo:basedocument
+  orderable
+
+[searchdemo:contentdocument] > hippostd:relaxed, hippotranslation:translated, searchdemo:basedocument
+  orderable
+
+[searchdemo:newsdocument] > hippostd:relaxed, hippotranslation:translated, searchdemo:basedocument
+  orderable
+

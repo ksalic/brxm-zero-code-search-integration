@@ -1,0 +1,37 @@
+definitions:
+  config:
+    /hst:hst/hst:configurations/searchdemo/hst:templates:
+      jcr:primaryType: hst:templates
+      /base-layout:
+        jcr:primaryType: hst:template
+        hst:renderpath: webfile:/freemarker/searchdemo/base-layout.ftl
+      /base-top-menu:
+        jcr:primaryType: hst:template
+        hst:renderpath: webfile:/freemarker/searchdemo/base-top-menu.ftl
+      /base-footer:
+        jcr:primaryType: hst:template
+        hst:renderpath: webfile:/freemarker/searchdemo/base-footer.ftl
+      /homepage-main:
+        jcr:primaryType: hst:template
+        hst:renderpath: webfile:/freemarker/searchdemo/homepage-main.ftl
+      /pagenotfound-main:
+        jcr:primaryType: hst:template
+        hst:renderpath: webfile:/freemarker/searchdemo/pagenotfound-main.ftl
+      /blog-main:
+        jcr:primaryType: hst:template
+        hst:renderpath: webfile:/freemarker/searchdemo/blog/blog-main.ftl
+      /blog-detail:
+        jcr:primaryType: hst:template
+        hst:renderpath: webfile:/freemarker/hstdefault/blog/blog-detail.ftl
+      /newspage-main:
+        jcr:primaryType: hst:template
+        hst:renderpath: webfile:/freemarker/hstdefault/newspage-main.ftl
+      /contentlist-main-contentlist:
+        jcr:primaryType: hst:template
+        hst:renderpath: webfile:/freemarker/hstdefault/contentlist-main-contentlist.ftl
+      /search-main:
+        jcr:primaryType: hst:template
+        hst:renderpath: webfile:/freemarker/searchdemo/search-main.ftl
+      /elastic-search-main:
+        jcr:primaryType: hst:template
+        hst:renderpath: webfile:/freemarker/searchdemo/elastic-search-main.ftl

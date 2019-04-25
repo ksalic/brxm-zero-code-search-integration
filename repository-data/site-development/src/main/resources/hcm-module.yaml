@@ -1,0 +1,6 @@
+site: searchdemo
+group: searchdemo
+project: searchdemo
+module:
+  name: searchdemo-repository-data-site-development
+  after: searchdemo-repository-data-site

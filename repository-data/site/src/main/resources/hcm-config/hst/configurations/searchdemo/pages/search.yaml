@@ -1,0 +1,9 @@
+definitions:
+  config:
+    /hst:hst/hst:configurations/searchdemo/hst:pages/search:
+      jcr:primaryType: hst:component
+      hst:referencecomponent: hst:abstractpages/base
+      /main:
+        jcr:primaryType: hst:component
+        hst:componentclassname: org.example.SimpleElasticSearchComponent
+        hst:template: elastic-search-main

@@ -1,0 +1,47 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+
+       http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+  <!--<bean id="bridgePropertyPlaceholder" class="org.apache.camel.spring.spi.BridgePropertyPlaceholderConfigurer">-->
+    <!--<property name="location" value="#{systemProperties['jms.conf']}"/>-->
+    <!--<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>-->
+  <!--</bean>-->
+
+  <!--<bean id="jmsConnectionFactory" class="org.apache.qpid.jms.JmsConnectionFactory">-->
+    <!--<property name="remoteURI" value="amqps://${jms.remoteuri}?amqp.traceFrames=true&amp;amqp.idleTimeout=120000"/>-->
+    <!--<property name="username" value="${jms.username}"/>-->
+    <!--<property name="password" value="${jms.password}"/>-->
+  <!--</bean>-->
+
+  <!--<bean id="jmsCachingConnectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">-->
+    <!--<property name="targetConnectionFactory" ref="jmsConnectionFactory"/>-->
+  <!--</bean>-->
+
+  <!--<bean id="jmsConfig" class="org.apache.camel.component.jms.JmsConfiguration">-->
+    <!--<property name="connectionFactory" ref="jmsCachingConnectionFactory"/>-->
+    <!--<property name="cacheLevelName" value="CACHE_CONSUMER"/>-->
+  <!--</bean>-->
+
+  <!--<bean id="amqp" class="org.apache.camel.component.amqp.AMQPComponent">-->
+    <!--<property name="configuration" ref="jmsConfig"/>-->
+  <!--</bean>-->
+
+  <!--<camelContext xmlns="http://camel.apache.org/schema/spring" id="site">-->
+
+    <!--<route id="Route-Hippo-Event-to-Queue">-->
+
+      <!--<from uri="hippoevent:?category=workflow&amp;action=publish,depublish"/>-->
+
+      <!--<convertBodyTo type="java.lang.String"/>-->
+
+      <!--<to uri="log:org.onehippo.forge.camel.demo?level=INFO"/>-->
+
+      <!--<to uri="amqp:topic:content-search"/>-->
+
+    <!--</route>-->
+
+  <!--</camelContext>-->
+
+</beans>

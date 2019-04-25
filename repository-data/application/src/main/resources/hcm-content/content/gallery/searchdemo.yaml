@@ -1,0 +1,7 @@
+/content/gallery/searchdemo:
+  jcr:primaryType: hippogallery:stdImageGallery
+  jcr:mixinTypes: ['hippo:named', 'mix:referenceable']
+  jcr:uuid: b83bbeb5-dc46-485e-bfec-6b62a0e6b420
+  hippo:name: Search Demo
+  hippostd:foldertype: [new-image-folder]
+  hippostd:gallerytype: ['hippogallery:imageset']

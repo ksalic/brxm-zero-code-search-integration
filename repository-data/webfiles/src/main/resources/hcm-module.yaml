@@ -1,0 +1,5 @@
+group: 
+  name: searchdemo
+project: searchdemo
+module:
+  name: searchdemo-repository-data-webfiles
